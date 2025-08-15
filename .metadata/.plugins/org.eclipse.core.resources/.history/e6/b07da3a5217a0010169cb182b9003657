@@ -1,0 +1,94 @@
+package com.banco.mscuentas.api.controller;
+
+import com.banco.mscuentas.api.dto.CuentaCreateRequest;
+import com.banco.mscuentas.api.dto.CuentaCreateRequest;
+import com.banco.mscuentas.api.dto.CuentaResponse;
+import com.banco.mscuentas.api.dto.CuentaUpdateRequest;
+import com.banco.mscuentas.application.cuenta.CreateCuentaUseCase;
+import com.banco.mscuentas.application.cuenta.GetCuentaUseCase;
+import com.banco.mscuentas.application.cuenta.ListCuentasUseCase;
+import com.banco.mscuentas.application.cuenta.UpdateCuentaUseCase;
+import com.banco.mscuentas.infrastructure.jpa.entity.CuentaEntity;
+
+
+import jakarta.validation.Valid;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
+import java.util.List;
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/cuentas")
+public class CuentaController {
+
+    private final CreateCuentaUseCase createUC;
+    private final GetCuentaUseCase getUC;
+    private final ListCuentasUseCase listUC;
+    private final UpdateCuentaUseCase updateUC;
+
+    public CuentaController(CreateCuentaUseCase createUC,
+                            GetCuentaUseCase getUC,
+                            ListCuentasUseCase listUC,
+                            UpdateCuentaUseCase updateUC) {
+        this.createUC = createUC;
+        this.getUC = getUC;
+        this.listUC = listUC;
+        this.updateUC = updateUC;
+    }
+
+    /**
+     * Crear cuenta
+     * - Valida DTO con @Valid
+     * - Devuelve 201 Created con Location: /cuentas/{id}
+     */
+    @PostMapping
+    public ResponseEntity<CuentaResponse> create(@Valid @RequestBody CuentaCreateRequest req) {
+        var res = createUC.handle(req);
+        return ResponseEntity
+                .created(URI.create("/cuentas/" + res.cuentaId()))
+                .body(res);
+    }
+
+    /**
+     * Obtener cuenta por ID (UUID)
+     * GET /cuentas/{id}
+     */
+    @GetMapping("/{id}")
+    public CuentaResponse getById(@PathVariable UUID id) {
+        return getUC.byId(id);
+    }
+
+    /**
+     * Obtener listado de cuentas
+     * GET /cuentas 
+     */
+    @GetMapping()
+    public Page<CuentaResponse> list(Pageable pageable) {
+        return listUC.handle(pageable);
+    }  
+    
+    /**
+     * Obtener cuenta por número
+     * GET /cuentas?numero=001-000-0001
+     * El "params" evita conflicto con el GET general.
+     */
+    @GetMapping(params = "numero")
+    public CuentaResponse getByNumero(@RequestParam String numero) {
+        return getUC.byNumero(numero);
+    }
+
+    /**
+     * Actualizar tipo/estado de la cuenta
+     * PUT /cuentas/{id}
+     */
+    @PutMapping("/{id}")
+    public CuentaResponse update(@PathVariable UUID id,
+                                 @Valid @RequestBody CuentaUpdateRequest req) {
+        return updateUC.handle(id, req);
+    }
+}

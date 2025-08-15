@@ -1,0 +1,5 @@
+package com.banco.mscuentas.api.controller;
+
+public class Reporte {
+
+}

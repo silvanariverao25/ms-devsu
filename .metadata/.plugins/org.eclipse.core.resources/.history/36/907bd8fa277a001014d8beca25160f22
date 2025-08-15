@@ -1,0 +1,33 @@
+// AmqpConfig.java
+package com.banco.mscuentas.infrastructure.config;
+
+import org.springframework.amqp.core.TopicExchange;
+import org.springframework.context.annotation.*;
+
+@Configuration
+public class AmqpConfig {
+  public static final String EXCHANGE = "bank.events";
+  @Bean public TopicExchange bankExchange(){ return new TopicExchange(EXCHANGE, true, false); }
+  
+  @Bean
+	Queue queue() {
+		return new Queue(QUEUE, true);
+	}
+
+	@Bean
+	Binding bindUpsert(Queue q, TopicExchange ex) {
+		return BindingBuilder.bind(q).to(ex).with("customer.insupd");
+	}
+
+	@Bean
+	Binding bindDeleted(Queue q, TopicExchange ex) {
+		return BindingBuilder.bind(q).to(ex).with("customer.deleted");
+	}
+
+	@Bean
+	MessageConverter jackson() {
+		return new Jackson2JsonMessageConverter();
+	}  
+}
+
+

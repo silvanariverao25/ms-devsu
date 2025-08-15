@@ -1,0 +1,20 @@
+package com.banco.mscuentas.application;
+
+import com.banco.mscuentas.api.dto.ClienteResponse;
+import com.banco.mscuentas.infrastructure.jpa.repository.ClienteRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ListcuentasUseCase {
+    private final ClienteRepository repo;
+    public ListcuentasUseCase(ClienteRepository repo) { this.repo = repo; }
+
+    public Page<ClienteResponse> handle(Pageable p) {
+        return repo.findAll(p).map(e -> new ClienteResponse(
+                e.getPersonaId(), e.getClienteId(), e.getNombre(), e.getGenero(), e.getEdad(),
+                e.getIdentificacion(), e.getDireccion(), e.getTelefono(), e.getEstado()
+        ));
+    }
+}

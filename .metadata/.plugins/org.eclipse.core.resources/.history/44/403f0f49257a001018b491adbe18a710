@@ -1,0 +1,15 @@
+package com.banco.msclientes.infrastructure.config;
+
+import org.springframework.amqp.core.TopicExchange;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class AmqpConfig {
+    public static final String EXCHANGE = "bank.events";
+
+    @Bean
+    public TopicExchange bankExchange() {
+        return new TopicExchange(EXCHANGE, true, false);
+    }
+}

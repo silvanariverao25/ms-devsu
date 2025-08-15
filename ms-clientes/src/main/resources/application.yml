@@ -1,0 +1,20 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/clientes_db
+    username: bank
+    password: bank
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        default_schema: bank
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest

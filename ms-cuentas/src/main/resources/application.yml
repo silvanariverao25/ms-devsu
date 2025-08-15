@@ -1,0 +1,26 @@
+server:
+  port: 8082
+  server:
+    error:
+      include-stacktrace: never
+ 
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cuentas_db
+    username: bank
+    password: bank
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        default_schema: bank
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    listener:
+      simple:
+        missing-queues-fatal: false

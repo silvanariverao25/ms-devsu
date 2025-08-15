@@ -1,0 +1,17 @@
+package com.banco.mscuentas.infrastructure.jpa.repository;
+
+import com.banco.mscuentas.infrastructure.jpa.entity.MovimientoEntity;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.time.OffsetDateTime;
+import java.util.*;
+
+public interface MovimientoRepository extends JpaRepository<MovimientoEntity, java.util.UUID> {
+  Page<MovimientoEntity> findByCuenta_CuentaId(UUID cuentaId, Pageable pageable);
+
+  // último movimiento por fecha, y de empate usa id
+  Optional<MovimientoEntity> findTopByCuenta_CuentaIdOrderByFechaDescMovimientoIdDesc(UUID cuentaId);
+  
+  Page<MovimientoEntity> findByCuenta_CuentaIdAndFechaBetween(UUID cuentaId, OffsetDateTime fechaInicio, OffsetDateTime fechaFin, Pageable pageable);
+}

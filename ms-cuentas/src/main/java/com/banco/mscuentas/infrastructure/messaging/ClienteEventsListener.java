@@ -1,0 +1,26 @@
+package com.banco.mscuentas.infrastructure.messaging;
+
+import com.banco.mscuentas.infrastructure.config.RabbitTopologyConfig;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.stereotype.Component;
+import java.util.UUID;
+
+@Component
+public class ClienteEventsListener {
+  private final InMemoryClienteRegistry registry;
+  public ClienteEventsListener(InMemoryClienteRegistry registry){ this.registry = registry; }
+
+  public record ClienteEvent(UUID clienteId, String identificacion, short estado) {}
+  public record ClienteDeletedEvent(UUID clienteId) {}
+
+	@RabbitListener(queues = RabbitTopologyConfig.Q_CLIENTE_CREATED)
+	public void onCreated(ClienteEvent evt) {
+		registry.put(evt.clienteId(), evt.estado());
+	}
+
+  @RabbitListener(queues = RabbitTopologyConfig.Q_CLIENTE_UPDATED)
+  public void onUpdated(ClienteEvent evt){ registry.put(evt.clienteId(), evt.estado()); }
+
+  @RabbitListener(queues = RabbitTopologyConfig.Q_CLIENTE_DELETED)
+  public void onDeleted(ClienteDeletedEvent evt){ registry.remove(evt.clienteId()); }
+}

@@ -1,0 +1,26 @@
+// ListMovimientosUseCase.java
+package com.banco.mscuentas.application.movimiento;
+
+import com.banco.mscuentas.api.dto.MovimientoResponse;
+import com.banco.mscuentas.infrastructure.jpa.repository.MovimientoRepository;
+import org.springframework.data.domain.*;
+import org.springframework.stereotype.Service;
+
+import java.time.OffsetDateTime;
+import java.util.UUID;
+
+@Service
+public class ListMovimientosUseCase {
+  private final MovimientoRepository repo;
+  public ListMovimientosUseCase(MovimientoRepository r){ this.repo=r; }
+
+  public Page<MovimientoResponse> byCuenta(UUID cuentaId, Pageable p){
+    return repo.findByCuenta_CuentaId(cuentaId, p)
+      .map(m -> new MovimientoResponse(m.getMovimientoId(), m.getCuenta().getCuentaId(), m.getFecha(), m.getTipoMovimiento(), m.getValor(), m.getSaldo()));
+  }
+  
+  public Page<MovimientoResponse> byCuentaYFechas(UUID cuentaId, OffsetDateTime fechainicio, OffsetDateTime fechafin, Pageable p){
+	    return repo.findByCuenta_CuentaIdAndFechaBetween(cuentaId, fechainicio, fechafin, p)
+	      .map(m -> new MovimientoResponse(m.getMovimientoId(), m.getCuenta().getCuentaId(), m.getFecha(), m.getTipoMovimiento(), m.getValor(), m.getSaldo()));
+	  }
+}
