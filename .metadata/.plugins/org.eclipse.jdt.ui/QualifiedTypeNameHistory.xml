@@ -2,4 +2,7 @@
 <qualifiedTypeNameHistroy>
     <fullyQualifiedTypeName name="com.banco.mscuentas.api.dto.CuentaResponse"/>
     <fullyQualifiedTypeName name="com.banco.mscuentas.api.dto.CuentaCreateRequest"/>
+    <fullyQualifiedTypeName name="java.time.OffsetTime"/>
+    <fullyQualifiedTypeName name="java.time.OffsetDateTime"/>
+    <fullyQualifiedTypeName name="java.time.LocalDate"/>
 </qualifiedTypeNameHistroy>
